@@ -202,6 +202,10 @@ SUPABASE_SERVICE_ROLE=<from-supabase-project-settings>
    - Shared code in `supabase/functions/_shared/`
    - Deploy with `supabase functions deploy <function-name>`
    - Add secrets via Supabase dashboard (Project Settings > Edge Functions)
+   - Required Edge Function secrets for broadcast features:
+     - `WHATSAPP_ACCESS_TOKEN` - WhatsApp Cloud API permanent token
+     - `WHATSAPP_BUSINESS_ACCOUNT_ID` - WhatsApp Business Account ID
+     - `WHATSAPP_API_PHONE_NUMBER_ID` - Phone Number ID from WhatsApp API Setup
 
 4. **Component development**:
    - UI components in `components/ui/` (shadcn/ui based)
