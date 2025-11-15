@@ -29,3 +29,12 @@ export type TemplateMessage = MessageJson & {
 export type ImageMessage = MessageJson & {
     image: ImageMessageBody,
 }
+
+export type ButtonMessageBody = {
+    text: string,
+    payload: string,
+}
+
+export type ButtonMessage = MessageJson & {
+    button: ButtonMessageBody,
+}
