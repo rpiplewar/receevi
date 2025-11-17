@@ -10,6 +10,7 @@ import ReceivedTemplateMessageUI from "./ReceivedTemplateMessageUI"
 import { markAsRead } from "./markAsRead"
 import ReceivedVideoMessageUI from "./ReceivedVideoMessageUI"
 import ReceivedDocumentMessageUI from "./ReceivedDocumentMessageUI"
+import ReceivedAudioMessageUI from "./ReceivedAudioMessageUI"
 import ReceivedButtonMessageUI from "./ReceivedButtonMessageUI"
 import { useSupabase } from "@/components/supabase-provider"
 
@@ -207,6 +208,8 @@ export default function MessageListClient({ from }: { from: string }) {
                                                         return <ReceivedTemplateMessageUI message={messageBody as TemplateMessage} />
                                                     case "document":
                                                         return <ReceivedDocumentMessageUI message={message} />
+                                                    case "audio":
+                                                        return <ReceivedAudioMessageUI message={message} />
                                                     case "button":
                                                         return <ReceivedButtonMessageUI buttonMessage={messageBody as ButtonMessage} />
                                                     default:
