@@ -111,11 +111,15 @@ Three types of Supabase clients are used throughout the app:
    - `update-unread-count` - Updates unread message counters
    - Broadcast tracking functions
 
+### WhatsApp API Client
+
+`lib/communication/communication.ts` is the central WhatsApp Cloud API client. It wraps all outgoing API calls (send text, image, audio, template messages, etc.) and is used by both the Next.js API route and Supabase Edge Functions. Always use this layer rather than calling the WhatsApp API directly.
+
 ### Message Sending
 
 Messages are sent via:
 1. Client calls `/api/sendMessage` API route
-2. API route calls WhatsApp Cloud API with `WHATSAPP_ACCESS_TOKEN`
+2. API route calls WhatsApp Cloud API via `lib/communication/communication.ts`
 3. Message stored in database with `is_received: false`
 4. Status updates received via webhook (sent/delivered/read/failed)
 
@@ -224,7 +228,9 @@ SUPABASE_SERVICE_ROLE=<from-supabase-project-settings>
 - **TanStack Query**: Data fetching and caching (used in some components)
 - **dayjs**: Date/time manipulation
 
-## Testing the Integration
+## Testing
+
+There are no automated tests in this project. Integration testing is done manually:
 
 1. Send test message to WhatsApp number
 2. Check webhook logs: `app/webhook/route.ts` console output
