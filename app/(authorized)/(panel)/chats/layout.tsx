@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase-server";
 import { AgantContextProvider } from "./AgentContext";
 import ChatContactsClient from "./ChatContactsClient";
 import { ContactContextProvider } from "./CurrentContactContext";
+import ChatsLayoutClient from "./ChatsLayoutClient";
 
 export default async function ChatsLayout({ children }: {
     children: React.ReactNode;
@@ -28,12 +29,15 @@ export default async function ChatsLayout({ children }: {
     return (
         <ContactContextProvider>
             <AgantContextProvider agents={agents}>
-                <div className="p-4 h-full">
-                    <div className="shadow-lg z-20 rounded-xl bg-white flex h-full">
-                        <div className="w-80 flex-shrink-0">
+                {/* p-0 on mobile (edge-to-edge), p-4 on desktop */}
+                <div className="p-0 md:p-4 h-full">
+                    <div className="shadow-none md:shadow-lg md:rounded-xl bg-white flex h-full overflow-hidden">
+                        {/* Contact list — ChatsLayoutClient handles mobile show/hide */}
+                        <ChatsLayoutClient>
                             <ChatContactsClient />
-                        </div>
-                        <div className="flex-grow">
+                        </ChatsLayoutClient>
+                        {/* Chat window — always visible, fills remaining space */}
+                        <div className="flex-grow min-w-0">
                             {children}
                         </div>
                     </div>

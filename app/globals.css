@@ -78,3 +78,9 @@
     margin: 0;
   }
 }
+
+@layer utilities {
+  .safe-pb {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}

@@ -3,9 +3,10 @@
 import { useSupabase } from "@/components/supabase-provider";
 import { useSupabaseUser, useUserRole } from "@/components/supabase-user-provider";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import UserLetterIcon from "@/components/users/UserLetterIcon";
-import { CircleUserRound, ContactIcon, LogOut, MessageCircleIcon, RadioIcon, UserRound, UsersIcon } from "lucide-react";
+import IOSInstallBanner from "@/components/IOSInstallBanner";
+import { ContactIcon, LogOut, MessageCircleIcon, RadioIcon, UsersIcon } from "lucide-react";
 import Link from 'next/link';
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useCallback, useEffect } from "react";
@@ -32,32 +33,27 @@ export default function PanelClient({ children }: { children: ReactNode }) {
 
     return (
         <div className="flex flex-col h-screen">
-            <div className="h-16 flex flex-row justify-between px-4 flex-shrink-0">
+            {/* TOP NAV — desktop only */}
+            <div className="hidden md:flex h-16 flex-row justify-between px-4 flex-shrink-0">
                 <div className="flex flex-row">
                     <div className="flex flex-row gap-2 items-center">
                         <img src="/assets/img/icon.svg" className="w-8 h-8" />
                         <div className="text-lg">Receevi</div>
                     </div>
                 </div>
-                {/* <div className="flex flex-row"> */}
                 <div className="flex flex-row items-center">
                     <Link href="/chats"><Button variant={activePath?.startsWith('/chats') ? "secondary" : "ghost"} className="px-4 justify-start"> <MessageCircleIcon />&nbsp;&nbsp;Chats</Button></Link>
                     <Link href="/contacts"><Button variant={activePath?.startsWith('/contacts') ? "secondary" : "ghost"} className="px-4 justify-start ml-2"><ContactIcon />&nbsp;&nbsp;Contacts</Button></Link>
-                    {(() => {
-                        if (userRole === 'admin') {
-                            return (
-                                <>
-                                    <Link href="/bulk-send"><Button variant={activePath?.startsWith('/bulk-send') ? "secondary" : "ghost"} className="px-4 justify-start ml-2"> <RadioIcon />&nbsp;&nbsp;Bulk Send</Button></Link>
-                                    <Link href="/users"><Button variant={activePath?.startsWith('/users') ? "secondary" : "ghost"} className="px-4 justify-start ml-2"> <UsersIcon />&nbsp;&nbsp;Users</Button></Link>
-                                </>
-                            )
-                        }
-                    })()}
+                    {userRole === 'admin' && (
+                        <>
+                            <Link href="/bulk-send"><Button variant={activePath?.startsWith('/bulk-send') ? "secondary" : "ghost"} className="px-4 justify-start ml-2"> <RadioIcon />&nbsp;&nbsp;Bulk Send</Button></Link>
+                            <Link href="/users"><Button variant={activePath?.startsWith('/users') ? "secondary" : "ghost"} className="px-4 justify-start ml-2"> <UsersIcon />&nbsp;&nbsp;Users</Button></Link>
+                        </>
+                    )}
                 </div>
                 <div className="flex flex-row items-center">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            {/* <CircleUserRound size={32} className="cursor-pointer" /> */}
                             <button>
                                 <UserLetterIcon user={{ firstName: user?.user_metadata.first_name, lastName: user?.user_metadata.last_name }} className="cursor-pointer h-10 w-10" />
                             </button>
@@ -78,22 +74,40 @@ export default function PanelClient({ children }: { children: ReactNode }) {
                             </DropdownMenuGroup>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    {/* <div>photo</div> */}
-                    {/* <div> */}
-                    {/* <div>{user?.user_metadata.full_name}</div> */}
-                    {/* <div>{user?.email}</div> */}
-                    {/* </div> */}
                 </div>
-                {/* </div> */}
             </div>
-            {/* <div className="flex-[6] max-w-xs border-e-2 border-e-slate-100 p-4">
-                <div className="text-center">Receevi</div>
-                <div className="mt-8">
-                </div>
-            </div> */}
-            <div className="h-full overflow-y-auto bg-gray-100 flex-grow">
+
+            {/* MAIN CONTENT — pb-16 on mobile to clear fixed bottom nav */}
+            <div className="h-full overflow-y-auto bg-gray-100 flex-grow pb-16 md:pb-0">
                 {children}
             </div>
+
+            {/* iOS install banner — position: fixed, sits above bottom nav */}
+            <IOSInstallBanner />
+
+            {/* BOTTOM NAV — mobile only, fixed */}
+            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-panel-header-background border-t border-gray-200 flex h-16 safe-pb">
+                <Link href="/chats" className="flex-1 flex flex-col items-center justify-center gap-1 pt-2">
+                    <MessageCircleIcon size={22} className={activePath?.startsWith('/chats') ? 'text-button-primary-background' : 'text-gray-500'} />
+                    <span className={`text-xs ${activePath?.startsWith('/chats') ? 'text-button-primary-background font-medium' : 'text-gray-500'}`}>Chats</span>
+                </Link>
+                <Link href="/contacts" className="flex-1 flex flex-col items-center justify-center gap-1 pt-2">
+                    <ContactIcon size={22} className={activePath?.startsWith('/contacts') ? 'text-button-primary-background' : 'text-gray-500'} />
+                    <span className={`text-xs ${activePath?.startsWith('/contacts') ? 'text-button-primary-background font-medium' : 'text-gray-500'}`}>Contacts</span>
+                </Link>
+                {userRole === 'admin' && (
+                    <>
+                        <Link href="/bulk-send" className="flex-1 flex flex-col items-center justify-center gap-1 pt-2">
+                            <RadioIcon size={22} className={activePath?.startsWith('/bulk-send') ? 'text-button-primary-background' : 'text-gray-500'} />
+                            <span className={`text-xs ${activePath?.startsWith('/bulk-send') ? 'text-button-primary-background font-medium' : 'text-gray-500'}`}>Broadcast</span>
+                        </Link>
+                        <Link href="/users" className="flex-1 flex flex-col items-center justify-center gap-1 pt-2">
+                            <UsersIcon size={22} className={activePath?.startsWith('/users') ? 'text-button-primary-background' : 'text-gray-500'} />
+                            <span className={`text-xs ${activePath?.startsWith('/users') ? 'text-button-primary-background font-medium' : 'text-gray-500'}`}>Users</span>
+                        </Link>
+                    </>
+                )}
+            </nav>
         </div>
     )
 }

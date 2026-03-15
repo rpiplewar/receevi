@@ -1,5 +1,6 @@
 import 'server-only'
 
+import type { Metadata, Viewport } from 'next'
 import SupabaseUserProvider from '@/components/supabase-user-provider'
 import { createClient } from '@/utils/supabase-server'
 import NextTopLoader from 'nextjs-toploader'
@@ -10,6 +11,31 @@ import SupabaseProvider from '@/components/supabase-provider'
 export const revalidate = 0
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  applicationName: 'Receevi',
+  title: 'Receevi',
+  description: 'WhatsApp Business messaging platform',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Receevi',
+  },
+  formatDetection: { telephone: false },
+  icons: {
+    apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+    icon: [
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#00a884',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}
 
 export default async function RootLayout({
   children,
@@ -23,11 +49,6 @@ export default async function RootLayout({
   } = await supabase.auth.getSession()
   return (
     <html lang="en">
-      <head>
-        <title>Receevi</title>
-        <meta name="description" content="Whatsapp Cloud API Webhook" />
-        <link rel="icon" href="/favicon.ico" />
-      </head>
       <body>
         <NextTopLoader color="#000" />
         <SupabaseProvider supabaseUrl={process.env.SUPABASE_URL} supabaseAnonKey={process.env.SUPABASE_ANON_KEY}>

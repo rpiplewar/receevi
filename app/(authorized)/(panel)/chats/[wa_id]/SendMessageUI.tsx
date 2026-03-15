@@ -128,7 +128,7 @@ export default function SendMessageUI({ message, fileType, file, setMessage, set
                 <TemplateSelection onTemplateSubmit={onTemplateSubmit}>
                     <Button ref={messageTemplateOpenerButton} className="hidden">Open message template</Button>
                 </TemplateSelection>
-                <Button type="submit" className="w-32" disabled={messageSendInProgress}>{messageSendInProgress ? <TWLoader className="w-4 h-4" /> : 'Send'}</Button>
+                <Button type="submit" className="w-auto md:w-32 px-4" disabled={messageSendInProgress}>{messageSendInProgress ? <TWLoader className="w-4 h-4" /> : 'Send'}</Button>
             </form>
         </>
     )

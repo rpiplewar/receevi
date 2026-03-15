@@ -38,3 +38,7 @@ next-env.d.ts
 
 .trash
 PRPs/
+# Serwist / PWA service worker build artifacts
+public/sw.js
+public/sw.js.map
+public/swe-worker-*.js

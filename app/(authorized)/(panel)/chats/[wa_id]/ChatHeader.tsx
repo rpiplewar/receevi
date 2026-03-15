@@ -9,6 +9,8 @@ import { Contact } from '@/types/contact'
 import { useCallback, useEffect, useState } from 'react'
 import { useAgents } from '../AgentContext'
 import BlankUser from '../BlankUser'
+import { ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
 
 export default function ChatHeader({ contact }: { contact: Contact | undefined }) {
     const agentState = useAgents()
@@ -30,6 +32,14 @@ export default function ChatHeader({ contact }: { contact: Contact | undefined }
     return (
         <div className="bg-panel-header-background">
             <header className="px-4 py-2 flex flex-row gap-4 items-center">
+                {/* Back button: mobile only */}
+                <Link
+                    href="/chats"
+                    className="md:hidden flex items-center justify-center w-8 h-8 -ml-1"
+                    aria-label="Back to contacts"
+                >
+                    <ArrowLeft size={20} className="text-panel-header-icon" />
+                </Link>
                 <BlankUser className="w-10 h-10" />
                 <div className='text-primary-strong flex-grow'>
                     {contact?.profile_name}
