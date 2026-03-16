@@ -11,14 +11,21 @@ async function post<T>(url: string, body: T) {
 }
 
 function regexSearchTextReplace(input: string, replacement: { text: string }[]) {
-    const varsRegex = /{{(\d+)}}/g
-    const allVars = input.matchAll(varsRegex)
-    for (const headerVar of allVars) {
-        const varIndex = Number.parseInt(headerVar[1]) - 1
-        const replacementText = replacement[varIndex].text
-        if (replacementText) {
-            input = input.replace(headerVar[0], replacementText)
+    // Match both numbered ({{1}}) and named ({{document_name}}) template variables
+    const varsRegex = /{{(\d+|\w+)}}/g
+    const allVars = [...input.matchAll(varsRegex)]
+    let replacementIndex = 0
+    for (const varMatch of allVars) {
+        const varKey = varMatch[1]
+        // For numbered vars, use the number as index; for named vars, use sequential order
+        const varIndex = /^\d+$/.test(varKey) ? Number.parseInt(varKey) - 1 : replacementIndex
+        if (varIndex < replacement.length) {
+            const replacementText = replacement[varIndex].text
+            if (replacementText) {
+                input = input.replace(varMatch[0], replacementText)
+            }
         }
+        replacementIndex++
     }
     return input;
 }
