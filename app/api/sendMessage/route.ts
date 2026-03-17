@@ -70,7 +70,6 @@ async function uploadFile(file: File, to: string) {
             upsert: false,
             duplex: 'half',
         })
-    console.log(`media stored at ${data?.path}`)
     if (error) throw error
     return [response.id, data.path];
 }
@@ -151,7 +150,6 @@ async function sendWhatsAppMediaOrTextMessage(to: string, message: string | null
             chat_id: Number.parseInt(response.contacts[0].wa_id),
             media_url: mediaUrl,
         })
-    console.log(supabaseResponse)
 }
 
 export async function POST(request: NextRequest) {

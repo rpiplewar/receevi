@@ -38,7 +38,6 @@ export default function SendMessageWrapper({ waId }: { waId: string }) {
             body: formData,
         })
         if (response.status === 200) {
-            console.log('successful')
         } else {
             throw new Error(`Request failed with status code ${response.status}`);
         }

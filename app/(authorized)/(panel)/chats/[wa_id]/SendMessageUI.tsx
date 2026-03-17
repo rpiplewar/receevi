@@ -25,6 +25,7 @@ export default function SendMessageUI({ message, fileType, file, setMessage, set
     const [messageSendInProgress, setMessageSendInProgress] = useState<boolean>(false);
     const [mediaSrcUrl, setMediaSrcUrl] = useState<string | undefined>()
     const [fileName, setFileName] = useState<string | undefined>()
+    const [sendError, setSendError] = useState<string | undefined>()
     const messageTemplateOpenerButton = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
@@ -37,10 +38,9 @@ export default function SendMessageUI({ message, fileType, file, setMessage, set
     function onFileClick() {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.accept = 'audio/aac, audio/mp4, audio/mpeg, audio/amr, audio/ogg, audio/opus, application/vnd.ms-powerpoint, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/pdf, text/plain, application/vnd.ms-excel, image/jpeg, image/png, image/webp, video/mp4, video/3gpp';
+        fileInput.accept = 'audio/aac, audio/mp4, audio/mpeg, audio/amr, audio/ogg, audio/opus, application/vnd.ms-powerpoint, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.openxmlformats-officedocument.presentationml.presentation, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/pdf, text/plain, application/vnd.ms-excel';
         fileInput.onchange = (e: Event) => {
             const file = (e.target as HTMLInputElement)?.files!![0];
-            console.log('file.type', file.type)
             setFileType('file')
             setFileName(file.name)
             setFile(file)
@@ -49,18 +49,16 @@ export default function SendMessageUI({ message, fileType, file, setMessage, set
     }
 
     function onPhotosVideosClick() {
-        console.log("photos videos click")
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
         fileInput.accept = 'image/jpeg, image/png, image/webp, video/mp4, video/3gpp';
         fileInput.onchange = (e: Event) => {
             const file = (e.target as HTMLInputElement)?.files!![0];
-            console.log('file.type', file.type)
             if (file.type.startsWith('image')) {
                 setFileType('image')
-            } else if (file.type.startsWith('video')) [
+            } else if (file.type.startsWith('video')) {
                 setFileType('video')
-            ]
+            }
             setFile(file)
             setMediaSrcUrl(URL.createObjectURL(file));
         }
@@ -92,13 +90,19 @@ export default function SendMessageUI({ message, fileType, file, setMessage, set
                     <button disabled={messageSendInProgress} className="absolute top-0 right-0 m-2" onClick={removeMedia}><XCircle className="h-8 w-8 bg-slate-300 rounded-full p-1" /></button>
                 </div>
             </div>}
+            {sendError && (
+                <div className="bg-red-100 text-red-700 px-4 py-2 text-sm">{sendError}</div>
+            )}
             <form className="bg-rich-text-panel-background px-4 py-2 flex flex-row gap-4" onSubmit={async (event) => {
                 event.preventDefault()
                 const trimmedMessage = message.trim()
                 if (trimmedMessage.length > 0 || file) {
                     setMessageSendInProgress(true)
+                    setSendError(undefined)
                     try {
                         await onMessageSend()
+                    } catch {
+                        setSendError("Failed to send message. Please try again.")
                     } finally {
                         setMessageSendInProgress(false)
                     }
