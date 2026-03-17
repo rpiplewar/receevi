@@ -9,7 +9,7 @@ import { Contact } from '@/types/contact'
 import { useCallback, useEffect, useState } from 'react'
 import { useAgents } from '../AgentContext'
 import BlankUser from '../BlankUser'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Phone } from 'lucide-react'
 import Link from 'next/link'
 
 export default function ChatHeader({ contact }: { contact: Contact | undefined }) {
@@ -44,6 +44,15 @@ export default function ChatHeader({ contact }: { contact: Contact | undefined }
                 <div className='text-primary-strong flex-grow'>
                     {contact?.profile_name}
                 </div>
+                {contact?.wa_id && (
+                    <a
+                        href={`tel:+${contact.wa_id}`}
+                        className="md:hidden flex items-center justify-center w-8 h-8 text-panel-header-icon"
+                        aria-label={`Call ${contact.profile_name}`}
+                    >
+                        <Phone size={20} />
+                    </a>
+                )}
                 {(() => {
                     if (userRole == 'admin') {
                         return (
