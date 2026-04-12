@@ -10,7 +10,7 @@ type DBMessage = {
     read_by_user_at: string | null
     sent_at: string | null
     wam_id: string
-    failed_at: string | null
+    failed_at: string | null | Date
     error_code: number | null
     error_message: string | null
   }

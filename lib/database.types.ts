@@ -266,6 +266,8 @@ export type Database = {
           chat_id: number
           created_at: string
           delivered_at: string | null
+          error_code: number | null
+          error_message: string | null
           failed_at: string | null | Date
           id: number
           is_received: boolean
@@ -280,6 +282,8 @@ export type Database = {
           chat_id: number
           created_at?: string
           delivered_at?: string | null | Date
+          error_code?: number | null
+          error_message?: string | null
           failed_at?: string | null | Date
           id?: number
           is_received?: boolean
@@ -294,6 +298,8 @@ export type Database = {
           chat_id?: number
           created_at?: string
           delivered_at?: string | null | Date
+          error_code?: number | null
+          error_message?: string | null
           failed_at?: string | null | Date
           id?: number
           is_received?: boolean
