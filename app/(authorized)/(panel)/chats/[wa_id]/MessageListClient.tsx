@@ -12,6 +12,7 @@ import ReceivedVideoMessageUI from "./ReceivedVideoMessageUI"
 import ReceivedDocumentMessageUI from "./ReceivedDocumentMessageUI"
 import ReceivedAudioMessageUI from "./ReceivedAudioMessageUI"
 import ReceivedButtonMessageUI from "./ReceivedButtonMessageUI"
+import DeliveryStatus from "./DeliveryStatus"
 import { useSupabase } from "@/components/supabase-provider"
 
 type UIMessageModel = DBMessage & {
@@ -219,7 +220,10 @@ export default function MessageListClient({ from }: { from: string }) {
                                         }
                                         <span className="invisible">ww:ww wm</span>
                                     </div>
-                                    <span className="text-xs pb-2 pe-2 text-bubble-meta absolute bottom-0 end-0">{messageDateTime.toLocaleTimeString().toLowerCase()}</span>
+                                    <span className="text-xs pb-2 pe-2 text-bubble-meta absolute bottom-0 end-0 flex items-center gap-0.5">
+                                        {messageDateTime.toLocaleTimeString().toLowerCase()}
+                                        {!!messageBody.to && <DeliveryStatus message={message} />}
+                                    </span>
                                 </div>
                             </TailWrapper>
                         </div>

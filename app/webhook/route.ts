@@ -96,6 +96,8 @@ export async function POST(request: NextRequest) {
               delivered_at_in?: Date,
               read_at_in?: Date,
               failed_at_in?: Date,
+              error_code_in?: number,
+              error_message_in?: string,
             } = {
               wam_id_in: status.id,
             }
@@ -112,6 +114,11 @@ export async function POST(request: NextRequest) {
             } else if (status.status === 'failed') {
               update_obj.failed_at_in = new Date(Number.parseInt(status.timestamp) * 1000)
               functionName = 'update_message_failed_status'
+              if (status.errors && status.errors.length > 0) {
+                update_obj.error_code_in = status.errors[0].code
+                update_obj.error_message_in = status.errors[0].title
+                console.warn(`[Webhook] Message failed: wam_id=${status.id} error_code=${status.errors[0].code} title=${status.errors[0].title}`)
+              }
             } else {
               console.warn(`Unknown status : ${status.status}`)
               console.warn('status', status)

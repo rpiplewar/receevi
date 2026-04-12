@@ -38,6 +38,14 @@ export type WebhookStatus = {
         },
         expiration_timestamp?: string,
     },
+    errors?: {
+        code: number,
+        title: string,
+        message?: string,
+        error_data?: {
+            details: string,
+        },
+    }[],
 }
 
 export type WebHookRequest = {
