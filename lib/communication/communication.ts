@@ -60,7 +60,8 @@ function replaceVarsInTemplate(components: MessageTemplateComponent[], vars: Tem
                         if (b.type === 'URL' && b.url.endsWith('{{1}}')) {
                             const payloadObj = buttonPayloads.find(x => 'index' in x && Number.parseInt(x.index) === bIndex)
                             if (payloadObj && 'sub_type' in payloadObj && payloadObj?.sub_type === 'url') {
-                                const replacement = payloadObj.parameters && payloadObj.parameters[0].payload
+                                const param = payloadObj.parameters && payloadObj.parameters[0] as any
+                                const replacement = param?.payload || param?.text
                                 b.url = b.url.replace('{{1}}', replacement)
                             }
                         }

@@ -49,7 +49,7 @@ export function useContactList(search: string, active: boolean) {
         if (active) {
             query = query.filter('last_message_received_at', 'gt', new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString())
         } else {
-            query = query.filter('last_message_received_at', 'lte', new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString())
+            query = query.or(`last_message_received_at.lte.${new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString()},last_message_received_at.is.null`)
         }
         const { data, error } = await query
         if (error) {
