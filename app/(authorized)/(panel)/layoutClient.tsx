@@ -107,6 +107,10 @@ export default function PanelClient({ children }: { children: ReactNode }) {
                         </Link>
                     </>
                 )}
+                <button onClick={logout} className="flex-1 flex flex-col items-center justify-center gap-1 pt-2">
+                    <LogOut size={22} className="text-gray-500" />
+                    <span className="text-xs text-gray-500">Logout</span>
+                </button>
             </nav>
         </div>
     )

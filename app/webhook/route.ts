@@ -53,6 +53,7 @@ export async function POST(request: NextRequest) {
         const statuses = changeValue.statuses;
         if (contacts && contacts.length > 0) {
           for (const contact of contacts) {
+            if (!contact.profile) continue;
             let { error } = await supabase
               .from(DBTables.Contacts)
               .upsert({
