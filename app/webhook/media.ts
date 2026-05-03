@@ -3,6 +3,7 @@ import { httpsGet } from "@/lib/httpsGet";
 import { createServiceClient } from "@/lib/supabase/service-client";
 import { MediaResponse } from "../../types/MediaResponse";
 import { WebhookMessage } from "../../types/webhook";
+import { withAppSecretProof } from "@/lib/whatsapp/appsecret-proof";
 
 const fileExtRegex = /filename=File.([A-z0-9]+)$/
 
@@ -25,7 +26,7 @@ export async function downloadMedia(imageMessage: WebhookMessage) {
         'User-Agent': 'curl/7.84.0',
         'Accept': '*/*',
     }
-    const firstResponse: Response = await fetch(`https://graph.facebook.com/v15.0/${mediaDetails.id}`, { headers: headerOptions })
+    const firstResponse: Response = await fetch(withAppSecretProof(`https://graph.facebook.com/v15.0/${mediaDetails.id}`), { headers: headerOptions })
 
     if (!firstResponse.ok) {
         const responseText = await firstResponse.text()
@@ -34,7 +35,7 @@ export async function downloadMedia(imageMessage: WebhookMessage) {
 
     const firstResponseBody: MediaResponse = await firstResponse.json()
 
-    const mediaResponse = await httpsGet(firstResponseBody.url, { headers: headerOptions })  // because fetch is not working :(
+    const mediaResponse = await httpsGet(withAppSecretProof(firstResponseBody.url), { headers: headerOptions })  // because fetch is not working :(
 
     if (!mediaResponse.statusCode || mediaResponse.statusCode >= 400) {
         throw new Error(`Media response error - status: ${mediaResponse.statusCode}`)

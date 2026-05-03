@@ -2,6 +2,7 @@ import { TemplateRequest, TextParameter } from "@/types/message-template-request
 import { MessageTemplateComponent } from "@/types/message-template";
 import { createServiceClient } from "@/lib/supabase/service-client";
 import { DBTables } from "@/lib/enums/Tables";
+import { withAppSecretProof } from "@/lib/whatsapp/appsecret-proof";
 
 async function post<T>(url: string, body: T) {
     return fetch(url, {
@@ -81,7 +82,7 @@ type TemplateMessagePayload = {
 };
 
 export async function sendTemplateMessage(to: string, template: TemplateRequest) {
-    const WHATSAPP_API_URL = `https://graph.facebook.com/v20.0/${process.env.WHATSAPP_API_PHONE_NUMBER_ID}/messages`;
+    const WHATSAPP_API_URL = withAppSecretProof(`https://graph.facebook.com/v20.0/${process.env.WHATSAPP_API_PHONE_NUMBER_ID}/messages`);
     const payload: TemplateMessagePayload = {
         messaging_product: "whatsapp",
         recipient_type: "individual",

@@ -4,6 +4,7 @@ import { createServiceClient } from "@/lib/supabase/service-client";
 import { createClient } from "@/utils/supabase-server";
 import { TemplateRequest } from "@/types/message-template-request";
 import { sendTemplateMessage } from "@/lib/communication/communication";
+import { withAppSecretProof } from "@/lib/whatsapp/appsecret-proof";
 
 type Media = {
     id?: string;
@@ -37,7 +38,7 @@ function getFileExtention(fileName: string): (string | null) {
 }
 
 async function uploadFile(file: File, to: string) {
-    const WHATSAPP_API_URL = `https://graph.facebook.com/v20.0/${process.env.WHATSAPP_API_PHONE_NUMBER_ID}/media`;
+    const WHATSAPP_API_URL = withAppSecretProof(`https://graph.facebook.com/v20.0/${process.env.WHATSAPP_API_PHONE_NUMBER_ID}/media`);
     const headers = {
         'Authorization': `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`
     };
@@ -75,7 +76,7 @@ async function uploadFile(file: File, to: string) {
 }
 
 async function sendWhatsAppMediaOrTextMessage(to: string, message: string | null | undefined, fileType: string | undefined | null, file: File | undefined | null) {
-    const WHATSAPP_API_URL = `https://graph.facebook.com/v20.0/${process.env.WHATSAPP_API_PHONE_NUMBER_ID}/messages`;
+    const WHATSAPP_API_URL = withAppSecretProof(`https://graph.facebook.com/v20.0/${process.env.WHATSAPP_API_PHONE_NUMBER_ID}/messages`);
     const payload: Message = {
         messaging_product: "whatsapp",
         recipient_type: "individual",

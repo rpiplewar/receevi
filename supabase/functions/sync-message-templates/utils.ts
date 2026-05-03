@@ -1,13 +1,16 @@
 import { SupabaseClientType } from "../_shared/supabase_types.ts";
 import { MessageTemplateResponse } from "../setup/message_template.ts";
+import { withAppSecretProof } from "../_shared/appsecret-proof.ts";
 
 export async function syncMessageTemplates(supabase: SupabaseClientType) {
     const whatsappBusinessAccountId = Deno.env.get('WHATSAPP_BUSINESS_ACCOUNT_ID')
     if (!whatsappBusinessAccountId) throw new Error("WHATSAPP_BUSINESS_ACCOUNT_ID environment variable is not set")
 
-    const token = Deno.env.get('WHATSAPP_ACCESS_TOKEN')
+    const token = Deno.env.get('WHATSAPP_ACCESS_TOKEN')!
+    const appSecret = Deno.env.get('FACEBOOK_APP_SECRET')
+    if (!appSecret) throw new Error("FACEBOOK_APP_SECRET environment variable is not set")
     const fetchLimit = 10
-    let next = `https://graph.facebook.com/v17.0/${whatsappBusinessAccountId}/message_templates?limit=${fetchLimit}`;
+    let next: string | null = await withAppSecretProof(`https://graph.facebook.com/v17.0/${whatsappBusinessAccountId}/message_templates?limit=${fetchLimit}`, token, appSecret);
     while (next) {
         console.log(`Fetch url: ${next}`)
         const response = await fetch(next, {
@@ -37,6 +40,6 @@ export async function syncMessageTemplates(supabase: SupabaseClientType) {
             .from('message_template')
             .upsert(databaseInput)
         if (error) throw error
-        next = jsonResponse.paging.next
+        next = jsonResponse.paging.next ? await withAppSecretProof(jsonResponse.paging.next, token, appSecret) : null
     }
 }

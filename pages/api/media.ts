@@ -3,6 +3,7 @@ import { WritableStream } from "stream/web";
 import { httpsGet } from "@/lib/httpsGet";
 import { getUserDataFromRequest } from "@/lib/userdata";
 import { MediaResponse } from "../../types/MediaResponse";
+import { withAppSecretProof } from "@/lib/whatsapp/appsecret-proof";
 
 export default async function handler(
     req: NextApiRequest,
@@ -19,10 +20,10 @@ export default async function handler(
         'Accept': '*/*',
     }
 
-    const response: Response = await fetch(`https://graph.facebook.com/v15.0/${mediaId}`, { headers: headerOptions })
+    const response: Response = await fetch(withAppSecretProof(`https://graph.facebook.com/v15.0/${mediaId}`), { headers: headerOptions })
     const mediaResponse: MediaResponse = await response.json()
 
-    const media = await httpsGet(mediaResponse.url, { headers: headerOptions })  // because fetch is not working :(
+    const media = await httpsGet(withAppSecretProof(mediaResponse.url), { headers: headerOptions })  // because fetch is not working :(
     const mediaBody = await media.body
 
     res.writeHead(200, {

@@ -15,6 +15,8 @@ type SendMessageResponse = {
 };
 
 
+import { withAppSecretProof } from "../_shared/appsecret-proof.ts";
+
 export async function sendTemplateMessage(templateName: string, language: string, contact_id: string) {
     const payload = {
         "messaging_product": "whatsapp",
@@ -39,7 +41,11 @@ export async function sendTemplateMessage(templateName: string, language: string
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${WHATSAPP_ACCESS_TOKEN}`
     }
-    const url = `https://graph.facebook.com/v13.0/${WHATSAPP_API_PHONE_NUMBER_ID}/messages`
+    const FACEBOOK_APP_SECRET = Deno.env.get('FACEBOOK_APP_SECRET')
+    if (!FACEBOOK_APP_SECRET) {
+        throw new Error("environment variable FACEBOOK_APP_SECRET not found")
+    }
+    const url = await withAppSecretProof(`https://graph.facebook.com/v13.0/${WHATSAPP_API_PHONE_NUMBER_ID}/messages`, WHATSAPP_ACCESS_TOKEN, FACEBOOK_APP_SECRET)
     const res = await fetch(url, {
         headers: headers,
         method: 'POST',
